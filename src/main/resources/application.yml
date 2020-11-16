@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: twm-eureka-service
+
+server:
+  port: ${PORT:2012}
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0
+    service-url:
+      defaultZone: http://localhost:2012/eureka
