@@ -1,6 +1,10 @@
 spring:
   application:
     name: twm-eureka-service
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
 
 server:
   port: ${PORT:2012}
