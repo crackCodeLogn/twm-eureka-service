@@ -8,16 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import static com.vv.personal.twm.eureka.constants.Constants.*;
 
@@ -36,15 +34,8 @@ public class EurekaServer {
     private Environment environment;
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("EST", ZoneId.SHORT_IDS))); //force setting
         SpringApplication.run(EurekaServer.class, args);
-    }
-
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.vv.personal.twm.eureka"))
-                .build();
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -56,7 +47,8 @@ public class EurekaServer {
             LOGGER.error("Failed to obtain ip address. ", e);
         }
         String port = environment.getProperty(LOCAL_SPRING_PORT);
-        LOGGER.info("'{}' activation is complete! Exact url: {}", environment.getProperty("spring.application.name").toUpperCase(),
+        LOGGER.info("'{}' activation is complete! Exact swagger url: {}", environment.getProperty("spring.application.name").toUpperCase(),
                 String.format(SWAGGER_UI_URL, host, port));
+        LOGGER.info("Eureka server is live and running at '{}'", String.format(HOST_URL, host, port));
     }
 }
